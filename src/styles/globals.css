@@ -366,6 +366,97 @@ kbd {
   font-size: 0.78rem;
 }
 
+.message-bubble {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  padding: 9px 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.message-compact {
+  padding: 7px 8px;
+  gap: 8px;
+}
+
+.message-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid var(--border);
+}
+
+.message-content {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.message-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-0);
+}
+
+.message-body {
+  font-size: 0.82rem;
+  color: var(--text-1);
+  line-height: 1.36;
+}
+
+.message-info {
+  border-color: rgba(81, 147, 231, 0.35);
+  background: rgba(81, 147, 231, 0.1);
+}
+
+.message-info .message-icon {
+  border-color: rgba(81, 147, 231, 0.45);
+  color: #2f7fff;
+  background: rgba(81, 147, 231, 0.13);
+}
+
+.message-success {
+  border-color: rgba(31, 159, 83, 0.35);
+  background: rgba(31, 159, 83, 0.1);
+}
+
+.message-success .message-icon {
+  border-color: rgba(31, 159, 83, 0.45);
+  color: var(--success);
+  background: rgba(31, 159, 83, 0.15);
+}
+
+.message-warning {
+  border-color: rgba(201, 132, 16, 0.4);
+  background: rgba(201, 132, 16, 0.11);
+}
+
+.message-warning .message-icon {
+  border-color: rgba(201, 132, 16, 0.48);
+  color: var(--warning);
+  background: rgba(201, 132, 16, 0.15);
+}
+
+.message-error {
+  border-color: rgba(194, 62, 62, 0.42);
+  background: rgba(194, 62, 62, 0.12);
+}
+
+.message-error .message-icon {
+  border-color: rgba(194, 62, 62, 0.52);
+  color: var(--error);
+  background: rgba(194, 62, 62, 0.17);
+}
+
 .button-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -586,7 +677,7 @@ kbd {
 }
 
 .tree-edge {
-  stroke: url(#treeEdgeGradient);
+  stroke: var(--edge-stroke);
   stroke-width: 3.4;
   stroke-linecap: round;
   opacity: 0.92;
@@ -599,7 +690,7 @@ kbd {
 }
 
 .tree-node {
-  fill: url(#treeNodeGradient);
+  fill: var(--node-fill);
   stroke: rgba(104, 157, 225, 0.95);
   stroke-width: 2.2;
 }
@@ -638,9 +729,91 @@ kbd {
   font-weight: 700;
 }
 
-.viz-caption {
-  font-size: 0.81rem;
-  color: var(--text-1);
+.viz-status {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+}
+
+.viz-status-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.viz-status-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.viz-status-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.viz-status-badge {
+  width: fit-content;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.67rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 3px 8px;
+}
+
+.viz-status-text {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.38;
+  color: var(--text-0);
+}
+
+.viz-status-info {
+  border-color: var(--active-border);
+  background: var(--active-bg);
+}
+
+.viz-status-info .viz-status-icon,
+.viz-status-info .viz-status-badge {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+}
+
+.viz-status-warning {
+  border-color: color-mix(in srgb, var(--warning) 48%, var(--border));
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+}
+
+.viz-status-warning .viz-status-icon,
+.viz-status-warning .viz-status-badge {
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+}
+
+.viz-status-success {
+  border-color: color-mix(in srgb, var(--success) 48%, var(--border));
+  background: color-mix(in srgb, var(--success) 13%, transparent);
+}
+
+.viz-status-success .viz-status-icon,
+.viz-status-success .viz-status-badge {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 15%, transparent);
 }
 
 .step-card {
@@ -769,12 +942,7 @@ kbd {
 }
 
 .traversal-feedback {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-strong);
-  padding: 10px;
-  display: grid;
-  gap: 5px;
+  margin-top: 2px;
 }
 
 .traversal-feedback-title {
@@ -789,6 +957,8 @@ kbd {
 }
 
 .traversal-feedback-order {
+  display: block;
+  margin-top: 4px;
   font-size: 0.76rem;
   color: var(--text-0);
   font-family: 'JetBrains Mono', monospace;

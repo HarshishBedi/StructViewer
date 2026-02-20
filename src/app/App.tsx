@@ -7,6 +7,7 @@ import { HelpModal } from '../components/layout/HelpModal';
 import { OperationLog } from '../components/layout/OperationLog';
 import { TimelineBar } from '../components/layout/TimelineBar';
 import { TopBar } from '../components/layout/TopBar';
+import { MessageBubble } from '../components/ui/MessageBubble';
 import { Panel } from '../components/ui/Panel';
 import { HeapModule } from '../features/heaps/HeapModule';
 import { StackModule } from '../features/stacks/StackModule';
@@ -195,16 +196,13 @@ export function App() {
             )}
             aria-live="polite"
           >
-            <p
-              className={cn(
-                'step-status-badge',
-                currentTimelineStep.isError ? 'step-status-error' : 'step-status-success'
-              )}
-            >
-              {currentTimelineStep.isError ? 'Needs Attention' : 'Action Applied'}
-            </p>
             <h3>{currentTimelineStep.title}</h3>
-            <p>{currentTimelineStep.description}</p>
+            <MessageBubble
+              variant={currentTimelineStep.isError ? 'error' : 'success'}
+              title={currentTimelineStep.isError ? 'Action failed' : 'Action complete'}
+            >
+              {currentTimelineStep.description}
+            </MessageBubble>
             <div className="step-meta">
               <span>Complexity: {currentTimelineStep.complexity}</span>
               <span>Step: {currentStep + 1}</span>

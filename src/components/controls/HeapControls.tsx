@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { parseIntegerInput } from '../../lib/utils/parse';
 import { Button } from '../ui/Button';
+import { MessageBubble } from '../ui/MessageBubble';
 
 export function HeapControls() {
   const insert = useAlgoStore((state) => state.heapInsert);
@@ -61,7 +62,11 @@ export function HeapControls() {
             }
           }}
         />
-        {error && <p className="field-error">{error}</p>}
+        {error && (
+          <MessageBubble variant="error" compact>
+            {error}
+          </MessageBubble>
+        )}
       </div>
 
       <div className="button-grid">

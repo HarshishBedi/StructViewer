@@ -1,9 +1,10 @@
 import type { CSSProperties } from 'react';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { type TreeNode } from '../../lib/algorithms/bst';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { cn } from '../../lib/utils/cn';
+import { StatusNote } from '../ui/StatusNote';
 
 interface TreeLayoutNode {
   value: number;
@@ -96,6 +97,11 @@ function getEdgeSegment(parent: PositionedNode, child: PositionedNode): EdgeSegm
 }
 
 export function TreeVisualizer() {
+  const svgId = useId().replace(/:/g, '');
+  const edgeGradientId = `treeEdgeGradient-${svgId}`;
+  const nodeGradientId = `treeNodeGradient-${svgId}`;
+  const nodeShadowId = `treeNodeShadow-${svgId}`;
+
   const { treeState, cursor, stepTimestamp } = useAlgoStore((state) => ({
     treeState: state.treeSession.history[state.treeSession.cursor].state,
     cursor: state.treeSession.cursor,
@@ -113,6 +119,16 @@ export function TreeVisualizer() {
     () => new Map(positioned.map((node) => [node.value, node])),
     [positioned]
   );
+  const traversalEmpty = treeState.traversalType !== null && treeState.traversal.length === 0;
+  const statusTone = treeState.traversalType === null ? 'info' : traversalEmpty ? 'warning' : 'success';
+  const statusBadge =
+    treeState.traversalType === null ? 'Traversal Hint' : `${treeState.traversalType} Traversal`;
+  const statusMessage =
+    treeState.traversalType === null
+      ? 'Run a traversal or search to inspect node flow.'
+      : traversalEmpty
+        ? 'Traversal produced no values.'
+        : treeState.traversal.join(' → ');
 
   return (
     <div className="viz-tree" aria-label="BST visualization">
@@ -122,17 +138,17 @@ export function TreeVisualizer() {
         className="tree-canvas"
       >
         <defs>
-          <linearGradient id="treeEdgeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(156, 188, 229, 0.94)" />
-            <stop offset="100%" stopColor="rgba(102, 142, 191, 0.7)" />
+          <linearGradient id={edgeGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgb(156 188 229)" stopOpacity="0.94" />
+            <stop offset="100%" stopColor="rgb(102 142 191)" stopOpacity="0.7" />
           </linearGradient>
-          <radialGradient id="treeNodeGradient" cx="30%" cy="25%" r="72%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
-            <stop offset="55%" stopColor="rgba(210,229,255,0.78)" />
-            <stop offset="100%" stopColor="rgba(169,204,251,0.66)" />
+          <radialGradient id={nodeGradientId} cx="30%" cy="25%" r="72%">
+            <stop offset="0%" stopColor="rgb(255 255 255)" stopOpacity="0.95" />
+            <stop offset="55%" stopColor="rgb(210 229 255)" stopOpacity="0.78" />
+            <stop offset="100%" stopColor="rgb(169 204 251)" stopOpacity="0.66" />
           </radialGradient>
-          <filter id="treeNodeShadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="rgba(18,39,66,0.24)" />
+          <filter id={nodeShadowId} x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="rgb(18 39 66)" floodOpacity="0.24" />
           </filter>
         </defs>
 
@@ -154,6 +170,7 @@ export function TreeVisualizer() {
               y1={edge.y1}
               x2={edge.x2}
               y2={edge.y2}
+              stroke={`url(#${edgeGradientId})`}
               className="tree-edge"
             />
           );
@@ -179,7 +196,8 @@ export function TreeVisualizer() {
                 cy={node.y}
                 r={TREE_NODE_RADIUS}
                 style={traversalStyle}
-                filter="url(#treeNodeShadow)"
+                fill={`url(#${nodeGradientId})`}
+                filter={`url(#${nodeShadowId})`}
                 className={cn(
                   'tree-node',
                   highlighted && 'tree-node-highlighted',
@@ -201,11 +219,7 @@ export function TreeVisualizer() {
         })}
       </svg>
 
-      <p className="viz-caption">
-        {treeState.traversalType
-          ? `${treeState.traversalType} traversal: ${treeState.traversal.join(' → ') || 'empty'}`
-          : 'Run a traversal or search to inspect node flow.'}
-      </p>
+      <StatusNote tone={statusTone} badge={statusBadge} message={statusMessage} />
     </div>
   );
 }

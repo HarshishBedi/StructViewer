@@ -3,6 +3,7 @@ import { type TraversalType } from '../../lib/algorithms/bst';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { parseIntegerInput } from '../../lib/utils/parse';
 import { Button } from '../ui/Button';
+import { MessageBubble } from '../ui/MessageBubble';
 
 const TRAVERSAL_LABELS: Record<TraversalType, string> = {
   inorder: 'Inorder',
@@ -71,7 +72,11 @@ export function TreeControls() {
             }
           }}
         />
-        {error && <p className="field-error">{error}</p>}
+        {error && (
+          <MessageBubble variant="error" compact>
+            {error}
+          </MessageBubble>
+        )}
       </div>
 
       <div className="button-grid">
@@ -114,15 +119,18 @@ export function TreeControls() {
         </Button>
       </div>
 
-      <div className="traversal-feedback" aria-live="polite">
-        <p className="traversal-feedback-title">
-          {traversalType ? `${TRAVERSAL_LABELS[traversalType]} active` : 'Traversal helper'}
-        </p>
-        <p className="traversal-feedback-path">
-          {traversalType ? TRAVERSAL_PATHS[traversalType] : 'Choose a traversal to animate tree visits.'}
-        </p>
-        {traversal.length > 0 && <p className="traversal-feedback-order">{traversal.join(' → ')}</p>}
-      </div>
+      <MessageBubble
+        variant={traversalType ? 'success' : 'info'}
+        title={traversalType ? `${TRAVERSAL_LABELS[traversalType]} active` : 'Traversal helper'}
+        className="traversal-feedback"
+      >
+        <>
+          <span className="traversal-feedback-path">
+            {traversalType ? TRAVERSAL_PATHS[traversalType] : 'Choose a traversal to animate tree visits.'}
+          </span>
+          {traversal.length > 0 && <span className="traversal-feedback-order">{traversal.join(' → ')}</span>}
+        </>
+      </MessageBubble>
 
       <Button className="full-width" onClick={preset}>
         Load Preset

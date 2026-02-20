@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { parseIntegerInput } from '../../lib/utils/parse';
 import { Button } from '../ui/Button';
+import { MessageBubble } from '../ui/MessageBubble';
 
 export function StackControls() {
   const push = useAlgoStore((state) => state.stackPush);
@@ -41,7 +42,11 @@ export function StackControls() {
             }
           }}
         />
-        {error && <p className="field-error">{error}</p>}
+        {error && (
+          <MessageBubble variant="error" compact>
+            {error}
+          </MessageBubble>
+        )}
       </div>
 
       <div className="button-grid">

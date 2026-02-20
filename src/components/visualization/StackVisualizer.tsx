@@ -1,9 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
+import { StatusNote } from '../ui/StatusNote';
 
 export function StackVisualizer() {
   const items = useAlgoStore((state) => state.stackSession.history[state.stackSession.cursor].state.items);
+  const topValue = items.length > 0 ? items[items.length - 1] : null;
+  const stackTone = topValue === null ? 'warning' : 'info';
 
   const reversed = useMemo(() => [...items].reverse(), [items]);
 
@@ -30,9 +33,11 @@ export function StackVisualizer() {
           })}
         </AnimatePresence>
       </div>
-      <p className="viz-caption">
-        Top {items.length > 0 ? `= ${items[items.length - 1]}` : '= empty'}
-      </p>
+      <StatusNote
+        tone={stackTone}
+        badge={topValue === null ? 'Stack Empty' : 'Top Element'}
+        message={topValue === null ? 'Top = empty' : `Top = ${topValue}`}
+      />
     </div>
   );
 }
