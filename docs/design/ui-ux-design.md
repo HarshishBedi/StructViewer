@@ -1,4 +1,4 @@
-# AlgoVis UI/UX Design Document
+# structviewer UI/UX Design Document
 
 ## Design Direction
 
@@ -14,7 +14,8 @@ The interface should feel modern, focused, and calm:
 - Keep controls predictable and consistent across modules.
 - Use animation to explain transitions, not to distract.
 - Prioritize legibility over density.
-- Make keyboard and mouse workflows equally first-class.
+- No redundant UI: do not duplicate controls, statuses, or helper hints.
+- If an action is directly available, avoid extra shortcut labels or duplicate messages.
 
 ## Theme System
 
@@ -39,7 +40,7 @@ Use color semantically (status meaning), not randomly.
 
 Desktop layout:
 
-- Top bar: module switcher, theme toggle, help, shortcuts.
+- Top bar: module switcher, theme preference, reset.
 - Left panel: structure controls and input actions.
 - Center canvas: main visualization stage.
 - Right panel: operation details and complexity hints.
@@ -93,17 +94,6 @@ Animation rules:
 - Tooltips
   - Short and instructional, never verbose.
 
-## Keyboard Shortcuts (Global Baseline)
-
-- `1 / 2 / 3`: switch modules.
-- `A`: autoplay toggle.
-- `N`: next step.
-- `P`: previous step.
-- `R`: reset current structure.
-- `Cmd/Ctrl + K`: open command palette.
-- `?`: open shortcuts/help modal.
-- `Esc`: close modal or clear selection.
-
 ## Feedback and Indications
 
 - Loading: subtle progress bar or skeleton.
@@ -125,4 +115,4 @@ Animation rules:
 - Are all primary actions discoverable without tutorial?
 - Are animation timings consistent with the motion scale?
 - Are mobile interactions as understandable as desktop interactions?
-- Are keyboard shortcuts discoverable and conflict-free?
+- Is there any duplicated control or repeated status message?

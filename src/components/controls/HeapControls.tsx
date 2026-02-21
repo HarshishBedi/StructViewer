@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
-import { parseIntegerInput } from '../../lib/utils/parse';
+import { parseIntegerCollectionInput } from '../../lib/utils/parse';
+import { randomInt } from '../../lib/utils/random';
 import { Button } from '../ui/Button';
 import { MessageBubble } from '../ui/MessageBubble';
 
@@ -18,14 +19,23 @@ export function HeapControls() {
   const [error, setError] = useState<string | null>(null);
 
   const submitInsert = () => {
-    const parsed = parseIntegerInput(value);
-    if (parsed.error || parsed.value === null) {
+    const parsed = parseIntegerCollectionInput(value);
+    if (parsed.error) {
       setError(parsed.error);
       return;
     }
 
-    insert(parsed.value);
+    parsed.values.forEach((nextValue) => {
+      insert(nextValue);
+    });
     setValue('');
+    setError(null);
+  };
+
+  const addRandom = () => {
+    const valueToAdd = randomInt(-99, 99);
+    setValue(String(valueToAdd));
+    insert(valueToAdd);
     setError(null);
   };
 
@@ -36,6 +46,7 @@ export function HeapControls() {
           variant={mode === 'max' ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => setMode('max')}
+          title="Switch to max-heap mode"
         >
           Max Heap
         </Button>
@@ -43,6 +54,7 @@ export function HeapControls() {
           variant={mode === 'min' ? 'primary' : 'secondary'}
           size="sm"
           onClick={() => setMode('min')}
+          title="Switch to min-heap mode"
         >
           Min Heap
         </Button>
@@ -50,18 +62,23 @@ export function HeapControls() {
 
       <div className="field">
         <label htmlFor="heap-value">Value</label>
-        <input
-          id="heap-value"
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder="e.g. 42"
-          inputMode="numeric"
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              submitInsert();
-            }
-          }}
-        />
+        <div className="input-inline">
+          <input
+            id="heap-value"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            placeholder="e.g. 42 or 10, 22, 31"
+            inputMode="text"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                submitInsert();
+              }
+            }}
+          />
+          <Button size="sm" variant="ghost" onClick={addRandom} title="Generate and insert a random value">
+            Random Add
+          </Button>
+        </div>
         {error && (
           <MessageBubble variant="error" compact>
             {error}
@@ -69,14 +86,30 @@ export function HeapControls() {
         )}
       </div>
 
-      <div className="button-grid">
-        <Button variant="primary" onClick={submitInsert}>
+      <div className="action-primary-row">
+        <Button
+          variant="primary"
+          size="sm"
+          className="full-width"
+          onClick={submitInsert}
+          title="Insert value(s) (Enter)"
+        >
           Insert
         </Button>
-        <Button onClick={extract}>Extract Root</Button>
-        <Button onClick={reset}>Reset</Button>
-        <Button onClick={preset}>Load Preset</Button>
       </div>
+
+      <div className="action-secondary-grid action-secondary-grid-2">
+        <Button size="sm" variant="secondary" onClick={extract} title="Extract root element">
+          Extract Root
+        </Button>
+        <Button size="sm" variant="secondary" onClick={reset} title="Reset heap">
+          Reset
+        </Button>
+      </div>
+
+      <Button className="full-width control-preset" size="sm" variant="ghost" onClick={preset} title="Load preset values">
+        Load Preset
+      </Button>
     </div>
   );
 }

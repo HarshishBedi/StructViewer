@@ -1,4 +1,4 @@
-# AlgoVis Tech Stack Document
+# structviewer Tech Stack Document
 
 ## Objectives
 
@@ -77,7 +77,7 @@ Usage baseline:
 ## Suggested Project Structure
 
 ```txt
-algovis/
+structviewer/
   docs/
     idea/
     design/

@@ -6,6 +6,8 @@ interface PanelProps {
   subtitle?: string;
   className?: string;
   headerActions?: ReactNode;
+  collapsed?: boolean;
+  collapsedLabel?: string;
 }
 
 export function Panel({
@@ -13,10 +15,17 @@ export function Panel({
   subtitle,
   className,
   headerActions,
+  collapsed = false,
+  collapsedLabel,
   children
 }: PropsWithChildren<PanelProps>) {
   return (
     <section className={cn('panel', className)}>
+      {collapsed && collapsedLabel && (
+        <div className="panel-collapsed-label" aria-hidden="true">
+          {collapsedLabel}
+        </div>
+      )}
       {(title || subtitle || headerActions) && (
         <header className="panel-header">
           <div>
