@@ -1,5 +1,5 @@
 import { TreeVisualizer } from '../../components/visualization/TreeVisualizer';
-import { type TreeNode } from '../../lib/algorithms/bst';
+import { analyzeTree, type TraversalType, type TreeNode } from '../../lib/algorithms/bst';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 
 function countNodes(root: TreeNode | null): number {
@@ -10,8 +10,29 @@ function countNodes(root: TreeNode | null): number {
   return 1 + countNodes(root.left) + countNodes(root.right);
 }
 
+const TRAVERSAL_CYCLE: TraversalType[] = ['inorder', 'preorder', 'postorder', 'level'];
+
+function nextTraversal(type: TraversalType | null): TraversalType {
+  if (type === null) {
+    return TRAVERSAL_CYCLE[0];
+  }
+
+  const index = TRAVERSAL_CYCLE.indexOf(type);
+  if (index === -1) {
+    return TRAVERSAL_CYCLE[0];
+  }
+
+  return TRAVERSAL_CYCLE[(index + 1) % TRAVERSAL_CYCLE.length];
+}
+
 export function TreeModule() {
   const state = useAlgoStore((store) => store.treeSession.history[store.treeSession.cursor].state);
+  const traverse = useAlgoStore((store) => store.treeTraverse);
+  const setAutoBalance = useAlgoStore((store) => store.treeSetAutoBalance);
+  const rebalance = useAlgoStore((store) => store.treeRebalance);
+  const balance = analyzeTree(state.root);
+  const canRebalance = state.root !== null && !balance.balanced;
+  const nextTraversalType = nextTraversal(state.traversalType);
 
   return (
     <div className="module-stage">
@@ -24,10 +45,34 @@ export function TreeModule() {
           <span>Selected</span>
           <strong>{state.highlighted ?? 'None'}</strong>
         </div>
-        <div className="metric-pill">
+        <button
+          type="button"
+          className="metric-pill metric-pill-toggle"
+          onClick={() => traverse(nextTraversalType)}
+          title={`Cycle traversal: ${nextTraversalType}`}
+        >
           <span>Traversal</span>
           <strong>{state.traversalType ?? 'None'}</strong>
-        </div>
+        </button>
+        <button
+          type="button"
+          className="metric-pill metric-pill-toggle"
+          onClick={rebalance}
+          disabled={!canRebalance}
+          title={canRebalance ? 'Rebalance tree now' : 'Tree is already balanced'}
+        >
+          <span>Balance</span>
+          <strong>{balance.balanced ? 'Balanced' : 'Unbalanced'}</strong>
+        </button>
+        <button
+          type="button"
+          className="metric-pill metric-pill-toggle"
+          onClick={() => setAutoBalance(!state.autoBalance)}
+          title={state.autoBalance ? 'Disable auto-balance' : 'Enable auto-balance'}
+        >
+          <span>Auto-Balance</span>
+          <strong>{state.autoBalance ? 'On' : 'Off'}</strong>
+        </button>
       </div>
       <TreeVisualizer />
     </div>

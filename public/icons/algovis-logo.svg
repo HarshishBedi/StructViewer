@@ -1,0 +1,49 @@
+<svg width="620" height="180" viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="12" y1="10" x2="172" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F2A49"/>
+      <stop offset="1" stop-color="#123B67"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="20" y1="24" x2="164" y2="156" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#64B5FF"/>
+      <stop offset="1" stop-color="#1FC6B1"/>
+    </linearGradient>
+    <linearGradient id="line" x1="42" y1="36" x2="144" y2="130" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BFE0FF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#8ED8CB" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="word" x1="208" y1="50" x2="560" y2="138" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111E35"/>
+      <stop offset="1" stop-color="#23446E"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="8" y="8" width="164" height="164" rx="42" fill="url(#bg)"/>
+  <rect x="8" y="8" width="164" height="164" rx="42" stroke="url(#accent)" stroke-width="2"/>
+
+  <g stroke="url(#line)" stroke-width="5.2" stroke-linecap="round">
+    <path d="M90 54L54 98"/>
+    <path d="M90 54L126 98"/>
+    <path d="M54 98L38 126"/>
+    <path d="M54 98L72 126"/>
+    <path d="M126 98L108 126"/>
+    <path d="M126 98L142 126"/>
+  </g>
+
+  <g>
+    <circle cx="90" cy="48" r="13" fill="url(#accent)"/>
+    <circle cx="54" cy="98" r="11" fill="#8BC8FF"/>
+    <circle cx="126" cy="98" r="11" fill="#5CD3C1"/>
+    <circle cx="38" cy="130" r="8.5" fill="#B2DDFF"/>
+    <circle cx="72" cy="130" r="8.5" fill="#9CCFFF"/>
+    <circle cx="108" cy="130" r="8.5" fill="#8ADFCF"/>
+    <circle cx="142" cy="130" r="8.5" fill="#72D7C6"/>
+  </g>
+
+  <text x="205" y="72" fill="#5F789A" font-family="Manrope, system-ui, sans-serif" font-size="24" font-weight="700" letter-spacing="0.12em">
+    INTERACTIVE ALGORITHM LAB
+  </text>
+  <text x="205" y="130" fill="url(#word)" font-family="Space Grotesk, Manrope, system-ui, sans-serif" font-size="58" font-weight="700" letter-spacing="-0.015em">
+    structviewer
+  </text>
+</svg>

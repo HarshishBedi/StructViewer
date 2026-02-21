@@ -1,6 +1,6 @@
-# AlgoVis Documentation
+# structviewer Documentation
 
-This folder contains the planning documents for the AlgoVis web application.
+This folder contains the planning documents for the structviewer web application.
 
 ## Structure
 

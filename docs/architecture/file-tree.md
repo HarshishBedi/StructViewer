@@ -1,4 +1,4 @@
-# AlgoVis File Tree Strategy
+# structviewer File Tree Strategy
 
 ## Goal
 
@@ -7,7 +7,7 @@ Keep the repository predictable, scalable, and easy to navigate by giving each f
 ## Canonical Tree
 
 ```txt
-algovis/
+structviewer/
   .github/
     workflows/
   config/

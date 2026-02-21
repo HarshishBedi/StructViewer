@@ -1,70 +1,136 @@
-import { MODULES } from '../../lib/constants/modules';
+import { MODULES, MODULE_SHORTCUTS } from '../../lib/constants/modules';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { type ThemeMode } from '../../lib/theme/theme';
 import { cn } from '../../lib/utils/cn';
 import { Button } from '../ui/Button';
+import { IconCommand, IconKeyboard, IconMoon, IconSidebarRight, IconSun } from '../ui/icons';
 
-const THEME_OPTIONS: Array<{ id: ThemeMode; label: string }> = [
-  { id: 'system', label: 'System' },
-  { id: 'light', label: 'Light' },
-  { id: 'dark', label: 'Dark' }
-];
+const THEME_LABELS: Record<'light' | 'dark', string> = {
+  light: 'Light',
+  dark: 'Dark'
+};
 
-export function TopBar() {
+function resolveDisplayTheme(mode: ThemeMode): 'light' | 'dark' {
+  if (mode === 'light' || mode === 'dark') {
+    return mode;
+  }
+
+  if (typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark') {
+    return 'dark';
+  }
+
+  return 'light';
+}
+
+function getNextThemeMode(mode: ThemeMode): 'light' | 'dark' {
+  return resolveDisplayTheme(mode) === 'dark' ? 'light' : 'dark';
+}
+
+function ThemeModeIcon({ mode }: { mode: 'light' | 'dark' }) {
+  if (mode === 'light') {
+    return <IconSun className="theme-toggle-icon" />;
+  }
+
+  return <IconMoon className="theme-toggle-icon" />;
+}
+
+interface TopBarProps {
+  inspectorOpen: boolean;
+  onToggleInspector: () => void;
+}
+
+export function TopBar({ inspectorOpen, onToggleInspector }: TopBarProps) {
   const activeModule = useAlgoStore((state) => state.activeModule);
   const setActiveModule = useAlgoStore((state) => state.setActiveModule);
-  const resetActiveStructure = useAlgoStore((state) => state.resetActiveStructure);
   const setHelpOpen = useAlgoStore((state) => state.setHelpOpen);
   const setCommandPaletteOpen = useAlgoStore((state) => state.setCommandPaletteOpen);
   const themeMode = useAlgoStore((state) => state.themeMode);
   const setThemeMode = useAlgoStore((state) => state.setThemeMode);
+  const displayTheme = resolveDisplayTheme(themeMode);
+  const nextThemeMode = getNextThemeMode(themeMode);
 
   return (
-    <header className="topbar">
-      <div className="brand">
-        <p className="brand-kicker">Interactive Algorithm Lab</p>
-        <h1>AlgoVis</h1>
+    <header className="topbar" role="banner">
+      <div className="brand-shell" title="structviewer">
+        <div className="brand-mark-wrap" aria-hidden="true">
+          <img src="/icons/structviewer-mark.svg" alt="" className="brand-mark" />
+        </div>
+        <div className="brand">
+          <h1>structviewer</h1>
+          <p className="brand-kicker">Structure Visualization Lab</p>
+        </div>
       </div>
 
-      <nav className="module-switcher" aria-label="Select data structure module">
-        {MODULES.map((module) => (
-          <button
-            key={module.id}
-            type="button"
-            className={cn('module-chip', activeModule === module.id && 'module-chip-active')}
-            onClick={() => setActiveModule(module.id)}
-          >
-            <span>{module.title}</span>
-            <kbd>{module.id === 'stack' ? '1' : module.id === 'heap' ? '2' : '3'}</kbd>
-          </button>
-        ))}
-      </nav>
-
-      <div className="topbar-actions">
-        <div className="theme-toggle" role="group" aria-label="Theme preference">
-          {THEME_OPTIONS.map((option) => (
+      <div className="navbar-primary" role="navigation" aria-label="Data structure modules">
+        <nav className="module-switcher" aria-label="Select data structure module">
+          {MODULES.map((module) => (
             <button
-              key={option.id}
+              key={module.id}
               type="button"
-              className={cn('theme-toggle-btn', themeMode === option.id && 'theme-toggle-btn-active')}
-              onClick={() => setThemeMode(option.id)}
-              aria-pressed={themeMode === option.id}
+              className={cn('module-chip', activeModule === module.id && 'module-chip-active')}
+              onClick={() => setActiveModule(module.id)}
+              aria-current={activeModule === module.id ? 'page' : undefined}
+              aria-keyshortcuts={MODULE_SHORTCUTS[module.id]}
+              title={`${module.title} (${MODULE_SHORTCUTS[module.id]})`}
             >
-              {option.label}
+              <span className="module-chip-label">{module.title}</span>
+              <kbd>{MODULE_SHORTCUTS[module.id]}</kbd>
             </button>
           ))}
-        </div>
-        <Button variant="ghost" size="sm" onClick={() => setCommandPaletteOpen(true)}>
-          Command
-          <kbd>⌘K</kbd>
+        </nav>
+      </div>
+
+      <div className="topbar-actions" role="toolbar" aria-label="Application controls">
+        <Button
+          variant="secondary"
+          size="sm"
+          iconOnly
+          className={cn('navbar-action', inspectorOpen && 'navbar-action-active')}
+          onClick={onToggleInspector}
+          aria-label={inspectorOpen ? 'Hide inspector panel' : 'Show inspector panel'}
+          aria-keyshortcuts="I"
+          title={inspectorOpen ? 'Hide Inspector (I)' : 'Show Inspector (I)'}
+        >
+          <IconSidebarRight className="theme-toggle-icon" />
+          <span className="sr-only">Toggle inspector</span>
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => setHelpOpen(true)}>
-          Shortcuts
-          <kbd>?</kbd>
+        <Button
+          variant="secondary"
+          size="sm"
+          iconOnly
+          className="navbar-action"
+          onClick={() => setCommandPaletteOpen(true)}
+          aria-label="Open command palette"
+          aria-keyshortcuts="Control+K Meta+K"
+          title="Command Palette (Ctrl/Cmd + K)"
+        >
+          <IconCommand className="theme-toggle-icon" />
+          <span className="sr-only">Open command palette</span>
         </Button>
-        <Button variant="secondary" size="sm" onClick={resetActiveStructure}>
-          Reset
-          <kbd>R</kbd>
+        <Button
+          variant="secondary"
+          size="sm"
+          iconOnly
+          className="navbar-action"
+          onClick={() => setHelpOpen(true)}
+          aria-label="Show keyboard shortcuts"
+          aria-keyshortcuts="?"
+          title="Keyboard Shortcuts (?)"
+        >
+          <IconKeyboard className="theme-toggle-icon" />
+          <span className="sr-only">Show keyboard shortcuts</span>
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          iconOnly
+          className="navbar-action theme-toggle-btn"
+          onClick={() => setThemeMode(nextThemeMode)}
+          aria-label={`Theme ${THEME_LABELS[displayTheme]}. Switch to ${THEME_LABELS[nextThemeMode]}`}
+          title={`Theme: ${THEME_LABELS[displayTheme]}`}
+        >
+          <ThemeModeIcon mode={displayTheme} />
+          <span className="sr-only">Toggle theme mode</span>
         </Button>
       </div>
     </header>

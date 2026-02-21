@@ -5,26 +5,23 @@ import { randomInt } from '../../lib/utils/random';
 import { Button } from '../ui/Button';
 import { MessageBubble } from '../ui/MessageBubble';
 
-export function StackControls() {
-  const push = useAlgoStore((state) => state.stackPush);
-  const pop = useAlgoStore((state) => state.stackPop);
-  const peek = useAlgoStore((state) => state.stackPeek);
-  const clear = useAlgoStore((state) => state.stackClear);
-  const preset = useAlgoStore((state) => state.stackLoadPreset);
-
+export function QueueControls() {
+  const enqueue = useAlgoStore((state) => state.queueEnqueue);
+  const dequeue = useAlgoStore((state) => state.queueDequeue);
+  const front = useAlgoStore((state) => state.queueFront);
+  const clear = useAlgoStore((state) => state.queueClear);
+  const preset = useAlgoStore((state) => state.queueLoadPreset);
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const submitPush = () => {
+  const submitEnqueue = () => {
     const parsed = parseIntegerCollectionInput(value);
     if (parsed.error) {
       setError(parsed.error);
       return;
     }
 
-    parsed.values.forEach((nextValue) => {
-      push(nextValue);
-    });
+    parsed.values.forEach((nextValue) => enqueue(nextValue));
     setValue('');
     setError(null);
   };
@@ -32,28 +29,28 @@ export function StackControls() {
   const addRandom = () => {
     const valueToAdd = randomInt(-99, 99);
     setValue(String(valueToAdd));
-    push(valueToAdd);
+    enqueue(valueToAdd);
     setError(null);
   };
 
   return (
     <div className="control-group">
       <div className="field">
-        <label htmlFor="stack-value">Value</label>
+        <label htmlFor="queue-value">Value</label>
         <div className="input-inline">
           <input
-            id="stack-value"
+            id="queue-value"
             value={value}
             onChange={(event) => setValue(event.target.value)}
-            placeholder="e.g. 24 or [4, 9, 16]"
+            placeholder="e.g. 7 or [4, 9, 16]"
             inputMode="text"
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
-                submitPush();
+                submitEnqueue();
               }
             }}
           />
-          <Button size="sm" variant="ghost" onClick={addRandom} title="Generate and push a random value">
+          <Button size="sm" variant="ghost" onClick={addRandom} title="Generate and enqueue a random value">
             Random Add
           </Button>
         </div>
@@ -65,19 +62,25 @@ export function StackControls() {
       </div>
 
       <div className="action-primary-row">
-        <Button variant="primary" size="sm" className="full-width" onClick={submitPush} title="Push value(s) (Enter)">
-          Push
+        <Button
+          variant="primary"
+          size="sm"
+          className="full-width"
+          onClick={submitEnqueue}
+          title="Enqueue value(s) (Enter)"
+        >
+          Enqueue
         </Button>
       </div>
 
       <div className="action-secondary-grid action-secondary-grid-3">
-        <Button size="sm" variant="secondary" onClick={pop} title="Pop top element">
-          Pop
+        <Button size="sm" variant="secondary" onClick={dequeue} title="Dequeue front element">
+          Dequeue
         </Button>
-        <Button size="sm" variant="secondary" onClick={peek} title="Peek top element">
-          Peek
+        <Button size="sm" variant="secondary" onClick={front} title="Inspect front element">
+          Front
         </Button>
-        <Button size="sm" variant="secondary" onClick={clear} title="Clear stack">
+        <Button size="sm" variant="secondary" onClick={clear} title="Clear queue">
           Clear
         </Button>
       </div>

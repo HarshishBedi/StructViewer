@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
-import { StatusNote } from '../ui/StatusNote';
 
 interface HeapNodePosition {
   index: number;
@@ -43,10 +42,9 @@ function getLayout(values: number[]): HeapLayout {
 }
 
 export function HeapVisualizer() {
-  const { items, mode } = useAlgoStore(
+  const { items } = useAlgoStore(
     (state) => state.heapSession.history[state.heapSession.cursor].state
   );
-  const rootValue = items.length > 0 ? items[0] : null;
 
   const layout = useMemo(() => getLayout(items), [items]);
   const positions = layout.nodes;
@@ -93,11 +91,6 @@ export function HeapVisualizer() {
           </g>
         ))}
       </svg>
-      <StatusNote
-        tone={rootValue === null ? 'warning' : 'info'}
-        badge={`${mode.toUpperCase()} Heap Root`}
-        message={rootValue === null ? 'Root = empty' : `Root = ${rootValue}`}
-      />
     </div>
   );
 }

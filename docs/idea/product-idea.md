@@ -1,8 +1,8 @@
-# AlgoVis Product Idea
+# structviewer Product Idea
 
 ## Vision
 
-AlgoVis is an interactive learning playground where users can build and manipulate data structures and algorithms visually, step by step, with immediate feedback and clean animations.
+structviewer is an interactive learning playground where users can build and manipulate data structures and algorithms visually, step by step, with immediate feedback and clean animations.
 
 The product goal is to make abstract algorithm behavior feel concrete, intuitive, and memorable.
 
@@ -14,7 +14,7 @@ Most algorithm learning tools are either:
 - Too academic for beginners.
 - Too simplistic for intermediate users.
 
-AlgoVis solves this by combining visual clarity, guided interactions, and low-friction controls in one modern web app.
+structviewer solves this by combining visual clarity, guided interactions, and low-friction controls in one modern web app.
 
 ## Target Users
 

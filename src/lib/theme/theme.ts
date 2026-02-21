@@ -1,7 +1,8 @@
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ResolvedTheme = 'light' | 'dark';
 
-export const THEME_STORAGE_KEY = 'algovis.theme-mode';
+export const THEME_STORAGE_KEY = 'structviewer.theme-mode';
+const LEGACY_THEME_STORAGE_KEY = 'algovis.theme-mode';
 
 export function isThemeMode(value: string | null | undefined): value is ThemeMode {
   return value === 'light' || value === 'dark' || value === 'system';
@@ -14,7 +15,12 @@ export function readStoredThemeMode(): ThemeMode {
 
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    return isThemeMode(stored) ? stored : 'system';
+    if (isThemeMode(stored)) {
+      return stored;
+    }
+
+    const legacy = window.localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
+    return isThemeMode(legacy) ? legacy : 'system';
   } catch {
     return 'system';
   }

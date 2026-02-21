@@ -13,6 +13,7 @@ export function CommandPalette() {
   const open = useAlgoStore((state) => state.commandPaletteOpen);
   const setOpen = useAlgoStore((state) => state.setCommandPaletteOpen);
   const setModule = useAlgoStore((state) => state.setActiveModule);
+  const setHelpOpen = useAlgoStore((state) => state.setHelpOpen);
   const reset = useAlgoStore((state) => state.resetActiveStructure);
   const prevStep = useAlgoStore((state) => state.prevStep);
   const nextStep = useAlgoStore((state) => state.nextStep);
@@ -29,17 +30,20 @@ export function CommandPalette() {
   const commands = useMemo<Command[]>(
     () => [
       { id: 'switch-stack', label: 'Switch to Stacks', hint: '1', run: () => setModule('stack') },
-      { id: 'switch-heap', label: 'Switch to Heaps', hint: '2', run: () => setModule('heap') },
-      { id: 'switch-tree', label: 'Switch to Trees', hint: '3', run: () => setModule('tree') },
-      { id: 'theme-system', label: 'Use system theme', hint: 'Theme', run: () => setThemeMode('system') },
+      { id: 'switch-queue', label: 'Switch to Queues', hint: '2', run: () => setModule('queue') },
+      { id: 'switch-heap', label: 'Switch to Heaps', hint: '3', run: () => setModule('heap') },
+      { id: 'switch-tree', label: 'Switch to Trees', hint: '4', run: () => setModule('tree') },
+      { id: 'switch-trie', label: 'Switch to Tries', hint: '5', run: () => setModule('trie') },
+      { id: 'switch-union-find', label: 'Switch to Union-Find', hint: '6', run: () => setModule('unionfind') },
       { id: 'theme-light', label: 'Use light theme', hint: 'Theme', run: () => setThemeMode('light') },
       { id: 'theme-dark', label: 'Use dark theme', hint: 'Theme', run: () => setThemeMode('dark') },
       { id: 'prev-step', label: 'Previous timeline step', hint: 'P', run: prevStep },
       { id: 'next-step', label: 'Next timeline step', hint: 'N', run: nextStep },
       { id: 'toggle-autoplay', label: 'Toggle autoplay', hint: 'A', run: toggleAutoplay },
-      { id: 'reset-structure', label: 'Reset current structure', hint: 'R', run: reset }
+      { id: 'reset-structure', label: 'Reset current structure', hint: 'R', run: reset },
+      { id: 'open-shortcuts', label: 'Show keyboard shortcuts', hint: '?', run: () => setHelpOpen(true) }
     ],
-    [nextStep, prevStep, reset, setModule, setThemeMode, toggleAutoplay]
+    [nextStep, prevStep, reset, setHelpOpen, setModule, setThemeMode, toggleAutoplay]
   );
 
   const filtered = useMemo(() => {
