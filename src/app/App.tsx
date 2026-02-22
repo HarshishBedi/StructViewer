@@ -465,7 +465,7 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <TopBar inspectorOpen={!rightPanelCollapsed} onToggleInspector={toggleRightPanel} />
+      <TopBar />
 
       <section className="workspace-shell" aria-label="Algorithm workspace">
         <main
