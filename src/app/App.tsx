@@ -535,7 +535,11 @@ export function App() {
           <Panel
             className="center-panel"
             title={activeModuleMeta.title}
-            subtitle={`Time Complexity: ${activeModuleMeta.complexityHint}`}
+            subtitle={
+              activeModule === 'unionfind'
+                ? activeModuleMeta.description
+                : `Time Complexity: ${activeModuleMeta.complexityHint}`
+            }
           >
             {activeModule === 'stack' && <StackModule />}
             {activeModule === 'queue' && <QueueModule />}

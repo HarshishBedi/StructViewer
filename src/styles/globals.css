@@ -628,6 +628,11 @@ kbd {
   color: var(--text-1);
 }
 
+.center-panel .panel-subtitle {
+  color: color-mix(in srgb, var(--text-0) 82%, var(--text-1));
+  font-weight: 600;
+}
+
 .panel-body {
   min-height: 0;
 }
@@ -1338,9 +1343,53 @@ kbd {
   gap: 12px;
 }
 
+.module-head {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.module-complexity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.complexity-chip {
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--text-1);
+}
+
+.complexity-chip strong {
+  color: var(--text-0);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.complexity-chip code {
+  color: var(--text-0);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+}
+
+.complexity-note {
+  font-size: 0.76rem;
+  color: var(--text-1);
+}
+
 .module-metrics {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
@@ -1404,6 +1453,11 @@ button.metric-pill {
   align-content: start;
 }
 
+.viz-stack {
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+}
+
 .viz-tree {
   position: relative;
   background: linear-gradient(145deg, var(--viz-bg-start), var(--viz-bg-end));
@@ -1415,10 +1469,20 @@ button.metric-pill {
   overflow: hidden;
 }
 
-.viz-union,
 .viz-trie {
   display: grid;
   grid-template-rows: 1fr auto;
+}
+
+.viz-union {
+  display: grid;
+  grid-template-rows: auto auto;
+  align-content: start;
+}
+
+.viz-trie {
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
 }
 
 .viz-tree::before {
@@ -1430,27 +1494,33 @@ button.metric-pill {
 }
 
 .stack-frame {
-  min-height: 320px;
-  max-height: 440px;
-  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  overflow: auto hidden;
-  background: color-mix(in srgb, var(--surface-soft) 64%, transparent);
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
 }
 
 .stack-items {
-  min-height: 100%;
-  width: min(100%, 560px);
-  margin-inline: auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .stack-empty {
-  margin: auto;
+  margin: 0;
+  margin-top: 6px;
   text-align: center;
   font-size: 0.84rem;
   color: var(--text-1);
@@ -1468,11 +1538,12 @@ button.metric-pill {
   color: var(--text-0);
   padding: 12px 14px;
   min-height: 56px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
   box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 18%, transparent);
+  width: 100%;
 }
 
 .stack-item-top {
@@ -1488,22 +1559,21 @@ button.metric-pill {
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
   font-size: 1.06rem;
+  min-width: 0;
 }
 
 .stack-meta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
+  flex: 0 0 auto;
 }
 
 .stack-index {
   color: color-mix(in srgb, var(--text-1) 88%, var(--text-0));
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-family: 'JetBrains Mono', monospace;
-  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--surface-strong) 66%, transparent);
-  padding: 3px 8px;
+  padding: 0;
 }
 
 .stack-top-chip {
@@ -1629,8 +1699,12 @@ button.metric-pill {
 }
 
 .trie-canvas {
-  height: 380px;
+  height: 100%;
+  min-height: 420px;
   width: 100%;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
 }
 
 .heap-canvas {
@@ -1766,57 +1840,90 @@ button.metric-pill {
   min-height: 0;
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: start;
 }
 
 .union-group {
   border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--surface-strong) 74%, transparent);
-  padding: 8px;
+  padding: 10px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  align-content: start;
 }
 
 .union-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 0.74rem;
-  font-weight: 700;
+  color: var(--text-1);
+}
+
+.union-group-head strong {
+  color: var(--text-0);
+  font-size: 0.82rem;
+}
+
+.union-group-head span {
+  font-size: 0.7rem;
+  font-family: 'JetBrains Mono', monospace;
   color: var(--text-1);
 }
 
 .union-group-members {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
+  align-items: center;
 }
 
 .union-node {
-  width: 30px;
-  height: 30px;
+  min-width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
   border-radius: 999px;
   display: grid;
   place-items: center;
-  font-size: 0.73rem;
+  padding: 0 8px;
+  font-size: 0.8rem;
   font-family: 'JetBrains Mono', monospace;
   background: var(--surface-subtle);
+  color: var(--text-0);
 }
 
 .union-node-root {
   border-color: var(--activity-border);
-  background: color-mix(in srgb, var(--activity-bg) 66%, var(--surface-subtle));
+  background: color-mix(in srgb, var(--activity-bg) 72%, var(--surface-subtle));
+  font-weight: 700;
 }
 
 .union-node-highlighted {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--activity-border) 48%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--activity-border) 50%, transparent);
 }
 
-.union-parent-strip {
-  margin-top: 10px;
+.union-parent-map {
+  margin-top: 2px;
   border-top: 1px dashed color-mix(in srgb, var(--border) 84%, transparent);
   padding-top: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+  gap: 8px;
+}
+
+.union-parent-head {
+  font-size: 0.74rem;
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.union-parent-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
   gap: 6px;
 }
 

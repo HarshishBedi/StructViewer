@@ -1,5 +1,6 @@
 import { HeapVisualizer } from '../../components/visualization/HeapVisualizer';
 import { useAlgoStore } from '../../lib/state/useAlgoStore';
+import { ModuleComplexity } from '../../components/layout/ModuleComplexity';
 
 export function HeapModule() {
   const { items, mode } = useAlgoStore(
@@ -8,18 +9,28 @@ export function HeapModule() {
 
   return (
     <div className="module-stage">
-      <div className="module-metrics">
-        <div className="metric-pill">
-          <span>Mode</span>
-          <strong>{mode.toUpperCase()}</strong>
-        </div>
-        <div className="metric-pill">
-          <span>Root</span>
-          <strong>{items.length > 0 ? items[0] : 'Empty'}</strong>
-        </div>
-        <div className="metric-pill">
-          <span>Nodes</span>
-          <strong>{items.length}</strong>
+      <div className="module-head">
+        <ModuleComplexity
+          chips={[
+            { label: 'Insert', complexity: 'O(log n)' },
+            { label: 'Extract', complexity: 'O(log n)' },
+            { label: 'Peek', complexity: 'O(1)' }
+          ]}
+          label="Heap operation complexity"
+        />
+        <div className="module-metrics">
+          <div className="metric-pill">
+            <span>Mode</span>
+            <strong>{mode.toUpperCase()}</strong>
+          </div>
+          <div className="metric-pill">
+            <span>Root</span>
+            <strong>{items.length > 0 ? items[0] : 'Empty'}</strong>
+          </div>
+          <div className="metric-pill">
+            <span>Nodes</span>
+            <strong>{items.length}</strong>
+          </div>
         </div>
       </div>
       <HeapVisualizer />

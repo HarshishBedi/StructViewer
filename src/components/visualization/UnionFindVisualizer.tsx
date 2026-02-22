@@ -30,10 +30,15 @@ export function UnionFindVisualizer() {
 
   return (
     <div className="viz-union" aria-label="Union-Find visualization">
-      <div className="union-groups">
+      <div className="union-groups" role="list" aria-label="Disjoint set components">
         {groups.map((group) => (
-          <section key={`uf-group-${group.root}`} className="union-group">
-            <header className="union-group-head">Root {group.root}</header>
+          <section key={`uf-group-${group.root}`} className="union-group" role="listitem">
+            <header className="union-group-head">
+              <strong>Root {group.root}</strong>
+              <span>
+                {group.members.length} node{group.members.length === 1 ? '' : 's'}
+              </span>
+            </header>
             <div className="union-group-members">
               {group.members.map((member) => (
                 <div
@@ -52,17 +57,23 @@ export function UnionFindVisualizer() {
         ))}
       </div>
 
-      <div className="union-parent-strip">
-        {state.parent.map((parent, index) => (
-          <div
-            key={`uf-parent-${index}`}
-            className={cn('union-parent-cell', state.highlighted.includes(index) && 'union-parent-active')}
-          >
-            <span>{index}</span>
-            <strong>{parent}</strong>
-          </div>
-        ))}
-      </div>
+      <section className="union-parent-map" aria-label="Parent pointer map">
+        <header className="union-parent-head">Parent map</header>
+        <div className="union-parent-strip">
+          {state.parent.map((parent, index) => (
+            <div
+              key={`uf-parent-${index}`}
+              className={cn(
+                'union-parent-cell',
+                state.highlighted.includes(index) && 'union-parent-active'
+              )}
+            >
+              <span>{index}</span>
+              <strong>{parent}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -41,8 +41,8 @@ export function StackVisualizer() {
                 >
                   <span className="stack-value">{value}</span>
                   <div className="stack-meta">
-                    <span className="stack-index">idx {originalIndex}</span>
                     {isTop && <span className="stack-top-chip">top</span>}
+                    <span className="stack-index">idx {originalIndex}</span>
                   </div>
                 </motion.div>
               );

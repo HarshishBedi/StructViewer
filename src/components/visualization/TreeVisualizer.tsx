@@ -2,7 +2,7 @@ import type {
   CSSProperties,
   PointerEvent as ReactPointerEvent
 } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { type TreeNode } from '../../lib/algorithms/bst';
@@ -178,10 +178,9 @@ function getEdgeSegment(parent: PositionedNode, child: PositionedNode): EdgeSegm
 }
 
 export function TreeVisualizer() {
-  const { treeState, cursor, stepTimestamp } = useAlgoStore(
+  const { treeState, stepTimestamp } = useAlgoStore(
     useShallow((state) => ({
       treeState: state.treeSession.history[state.treeSession.cursor].state,
-      cursor: state.treeSession.cursor,
       stepTimestamp: state.treeSession.history[state.treeSession.cursor].timestamp
     }))
   );
@@ -425,68 +424,87 @@ export function TreeVisualizer() {
       >
         <g transform={`translate(${pan.x} ${pan.y})`}>
           <g transform={`scale(${zoom})`}>
-            {positioned.map((node) => {
-              if (node.parent === null) {
-                return null;
-              }
+            <AnimatePresence initial={false}>
+              {positioned.map((node) => {
+                if (node.parent === null) {
+                  return null;
+                }
 
-              const parent = byValue.get(node.parent);
-              if (!parent) {
-                return null;
-              }
+                const parent = byValue.get(node.parent);
+                if (!parent) {
+                  return null;
+                }
 
-              const edge = getEdgeSegment(parent, node);
-              return (
-                <line
-                  key={`edge-${node.value}`}
-                  x1={edge.x1}
-                  y1={edge.y1}
-                  x2={edge.x2}
-                  y2={edge.y2}
-                  className="tree-edge"
-                />
-              );
-            })}
+                const edge = getEdgeSegment(parent, node);
+                return (
+                  <motion.line
+                    key={`edge-${node.parent}-${node.value}`}
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.92 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    x1={edge.x1}
+                    y1={edge.y1}
+                    x2={edge.x2}
+                    y2={edge.y2}
+                    className="tree-edge"
+                  />
+                );
+              })}
+            </AnimatePresence>
 
-            {positioned.map((node, index) => {
-              const highlighted = treeState.highlighted === node.value;
-              const visiting = activeTraversalValue === node.value;
-              const traversalIndex = traversalOrder.get(node.value);
-              const traversed = traversalIndex !== undefined;
-              const traversalStyle = traversed
-                ? ({ '--traversal-delay': `${traversalIndex * 45}ms` } as CSSProperties)
-                : undefined;
+            <AnimatePresence initial={false} mode="popLayout">
+              {positioned.map((node, index) => {
+                const highlighted = treeState.highlighted === node.value;
+                const visiting = activeTraversalValue === node.value;
+                const traversalIndex = traversalOrder.get(node.value);
+                const traversed = traversalIndex !== undefined;
+                const traversalStyle = traversed
+                  ? ({ '--traversal-delay': `${traversalIndex * 45}ms` } as CSSProperties)
+                  : undefined;
 
-              return (
-                <g key={`node-${node.value}-${cursor}-${stepTimestamp}`}>
-                  <motion.circle
-                    initial={{ opacity: 0, scale: 0.86 }}
+                return (
+                  <motion.g
+                    key={`node-${node.value}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.84 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.24, delay: index * 0.012, ease: [0.22, 1, 0.36, 1] }}
-                    cx={node.x}
-                    cy={node.y}
-                    r={TREE_NODE_RADIUS}
-                    style={traversalStyle}
-                    className={cn(
-                      'tree-node',
-                      visiting && 'tree-node-visiting',
-                      highlighted && 'tree-node-highlighted',
-                      traversed && 'tree-node-traversed'
-                    )}
-                  />
-                  <ellipse
-                    cx={node.x - 7}
-                    cy={node.y - 13}
-                    rx="6"
-                    ry="3.2"
-                    className="tree-node-glare"
-                  />
-                  <text x={node.x} y={node.y} className="tree-node-text">
-                    {node.value}
-                  </text>
-                </g>
-              );
-            })}
+                    exit={{ opacity: 0, scale: 0.72 }}
+                    transition={{
+                      layout: { type: 'spring', stiffness: 360, damping: 28 },
+                      duration: 0.22,
+                      delay: index * 0.01,
+                      ease: [0.22, 1, 0.36, 1]
+                    }}
+                    style={{ transformOrigin: `${node.x}px ${node.y}px` }}
+                  >
+                    <circle
+                      cx={node.x}
+                      cy={node.y}
+                      r={TREE_NODE_RADIUS}
+                      style={traversalStyle}
+                      className={cn(
+                        'tree-node',
+                        visiting && 'tree-node-visiting',
+                        highlighted && 'tree-node-highlighted',
+                        traversed && 'tree-node-traversed'
+                      )}
+                    />
+                    <ellipse
+                      cx={node.x - 7}
+                      cy={node.y - 13}
+                      rx="6"
+                      ry="3.2"
+                      className="tree-node-glare"
+                    />
+                    <text x={node.x} y={node.y} className="tree-node-text">
+                      {node.value}
+                    </text>
+                  </motion.g>
+                );
+              })}
+            </AnimatePresence>
           </g>
         </g>
       </svg>
