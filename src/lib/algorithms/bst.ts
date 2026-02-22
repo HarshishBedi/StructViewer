@@ -27,6 +27,22 @@ export interface TreeBalanceInfo {
   balanced: boolean;
 }
 
+function validateBst(node: TreeNode | null, min: number, max: number): boolean {
+  if (node === null) {
+    return true;
+  }
+
+  if (node.value <= min || node.value >= max) {
+    return false;
+  }
+
+  return validateBst(node.left, min, node.value) && validateBst(node.right, node.value, max);
+}
+
+export function isValidBst(root: TreeNode | null): boolean {
+  return validateBst(root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+}
+
 function cloneNode(node: TreeNode | null): TreeNode | null {
   if (node === null) {
     return null;
@@ -84,9 +100,18 @@ function findMin(node: TreeNode): TreeNode {
   return current;
 }
 
-function deleteNode(node: TreeNode | null, value: number): { node: TreeNode | null; deleted: boolean } {
+type DeleteStrategy = 'leaf' | 'single-left' | 'single-right' | 'successor';
+
+interface DeleteNodeResult {
+  node: TreeNode | null;
+  deleted: boolean;
+  strategy: DeleteStrategy | null;
+  successorValue: number | null;
+}
+
+function deleteNode(node: TreeNode | null, value: number): DeleteNodeResult {
   if (node === null) {
-    return { node: null, deleted: false };
+    return { node: null, deleted: false, strategy: null, successorValue: null };
   }
 
   if (value < node.value) {
@@ -96,7 +121,9 @@ function deleteNode(node: TreeNode | null, value: number): { node: TreeNode | nu
         ...node,
         left: result.node
       },
-      deleted: result.deleted
+      deleted: result.deleted,
+      strategy: result.strategy,
+      successorValue: result.successorValue
     };
   }
 
@@ -107,21 +134,29 @@ function deleteNode(node: TreeNode | null, value: number): { node: TreeNode | nu
         ...node,
         right: result.node
       },
-      deleted: result.deleted
+      deleted: result.deleted,
+      strategy: result.strategy,
+      successorValue: result.successorValue
     };
   }
 
   if (node.left === null) {
+    const strategy: DeleteStrategy = node.right === null ? 'leaf' : 'single-right';
     return {
       node: node.right,
-      deleted: true
+      deleted: true,
+      strategy,
+      successorValue: null
     };
   }
 
   if (node.right === null) {
+    const strategy: DeleteStrategy = 'single-left';
     return {
       node: node.left,
-      deleted: true
+      deleted: true,
+      strategy,
+      successorValue: null
     };
   }
 
@@ -134,7 +169,9 @@ function deleteNode(node: TreeNode | null, value: number): { node: TreeNode | nu
       left: node.left,
       right: result.node
     },
-    deleted: true
+    deleted: true,
+    strategy: 'successor',
+    successorValue: successor.value
   };
 }
 
@@ -272,6 +309,15 @@ export function insertTree(state: TreeState, value: number): TreeActionResult {
   }
 
   const autoBalancedRoot = state.autoBalance ? rebalanceRoot(result.node) : result.node;
+  if (!isValidBst(autoBalancedRoot)) {
+    return {
+      next: state,
+      title: `Insert ${value} failed`,
+      description: 'Insert was aborted because BST invariants would be violated.',
+      complexity: 'O(log n) average',
+      isError: true
+    };
+  }
 
   return {
     next: {
@@ -309,6 +355,35 @@ export function deleteTree(state: TreeState, value: number): TreeActionResult {
   }
 
   const autoBalancedRoot = state.autoBalance ? rebalanceRoot(result.node) : result.node;
+  if (!isValidBst(autoBalancedRoot)) {
+    return {
+      next: state,
+      title: `Delete ${value} failed`,
+      description: 'Delete was aborted because BST invariants would be violated.',
+      complexity: 'O(log n) average',
+      isError: true
+    };
+  }
+
+  const baseDescription = (() => {
+    if (result.strategy === 'leaf') {
+      return `${value} was removed as a leaf node.`;
+    }
+
+    if (result.strategy === 'single-left') {
+      return `${value} was removed and its left child was promoted.`;
+    }
+
+    if (result.strategy === 'single-right') {
+      return `${value} was removed and its right child was promoted.`;
+    }
+
+    if (result.strategy === 'successor') {
+      return `${value} was removed using inorder successor ${result.successorValue}.`;
+    }
+
+    return `${value} was removed from the BST.`;
+  })();
 
   return {
     next: {
@@ -320,8 +395,8 @@ export function deleteTree(state: TreeState, value: number): TreeActionResult {
     },
     title: `Delete ${value}`,
     description: state.autoBalance
-      ? `${value} was removed and the tree was rebalanced.`
-      : `${value} was removed from the BST.`,
+      ? `${baseDescription} Tree was then rebalanced.`
+      : baseDescription,
     complexity: state.autoBalance ? 'O(log n) average + O(n) rebalance' : 'O(log n) average'
   };
 }

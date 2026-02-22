@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import {
+  clearTree,
   deleteTree,
   insertTree,
   presetTree,
@@ -13,6 +14,7 @@ import {
   type TreeState
 } from '../algorithms/bst';
 import {
+  clearHeap,
   extractRoot,
   insertHeap,
   presetHeap,
@@ -362,55 +364,41 @@ export const useAlgoStore = create<AlgoStoreState>((set) => ({
       }
 
       if (state.activeModule === 'heap') {
+        const current = state.heapSession.history[state.heapSession.cursor].state;
+        const result = clearHeap(current);
         return {
           heapSession: createSession(
-            createStep(
-              INITIAL_HEAP_STATE,
-              'Heap reset',
-              'Heap reset to sample max-heap preset.',
-              'O(n)'
-            )
+            createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
           ),
           autoplay: false
         };
       }
 
       if (state.activeModule === 'tree') {
+        const result = clearTree();
         return {
           treeSession: createSession(
-            createStep(
-              INITIAL_TREE_STATE,
-              'Tree reset',
-              'Tree reset to sample BST preset.',
-              'O(n log n)'
-            )
+            createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
           ),
           autoplay: false
         };
       }
 
       if (state.activeModule === 'trie') {
+        const result = clearTrie();
         return {
           trieSession: createSession(
-            createStep(
-              INITIAL_TRIE_STATE,
-              'Trie reset',
-              'Trie reset to sample preset words.',
-              'O(nk)'
-            )
+            createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
           ),
           autoplay: false
         };
       }
 
+      const current = state.unionFindSession.history[state.unionFindSession.cursor].state;
+      const result = resetUnionFind(current);
       return {
         unionFindSession: createSession(
-          createStep(
-            INITIAL_UNION_FIND_STATE,
-            'Union-Find reset',
-            'All nodes reset to isolated sets.',
-            'O(n)'
-          )
+          createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
         ),
         autoplay: false
       };
@@ -560,12 +548,16 @@ export const useAlgoStore = create<AlgoStoreState>((set) => ({
       };
     }),
   heapReset: () =>
-    set(() => ({
-      heapSession: createSession(
-        createStep(INITIAL_HEAP_STATE, 'Heap reset', 'Reset to sample max-heap preset.', 'O(n)')
-      ),
-      autoplay: false
-    })),
+    set((state) => {
+      const current = state.heapSession.history[state.heapSession.cursor].state;
+      const result = clearHeap(current);
+      return {
+        heapSession: createSession(
+          createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
+        ),
+        autoplay: false
+      };
+    }),
   heapLoadPreset: () =>
     set((state) => {
       const current = state.heapSession.history[state.heapSession.cursor].state;
@@ -663,19 +655,11 @@ export const useAlgoStore = create<AlgoStoreState>((set) => ({
       };
     }),
   treeReset: () =>
-    set((state) => {
-      const current = state.treeSession.history[state.treeSession.cursor].state;
-      const nextState = presetTree(current.autoBalance).next;
+    set(() => {
+      const result = clearTree();
       return {
         treeSession: createSession(
-          createStep(
-            nextState,
-            'Tree reset',
-            current.autoBalance
-              ? 'Reset to sample BST preset with auto-balance enabled.'
-              : 'Reset to sample BST preset.',
-            'O(n log n)'
-          )
+          createStep(result.next, result.title, result.description, result.complexity, !!result.isError)
         ),
         autoplay: false
       };

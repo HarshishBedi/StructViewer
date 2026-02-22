@@ -465,7 +465,7 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <TopBar inspectorOpen={!rightPanelCollapsed} onToggleInspector={toggleRightPanel} />
+      <TopBar />
 
       <section className="workspace-shell" aria-label="Algorithm workspace">
         <main
@@ -535,7 +535,11 @@ export function App() {
           <Panel
             className="center-panel"
             title={activeModuleMeta.title}
-            subtitle={`Time Complexity: ${activeModuleMeta.complexityHint}`}
+            subtitle={
+              activeModule === 'unionfind'
+                ? activeModuleMeta.description
+                : `Time Complexity: ${activeModuleMeta.complexityHint}`
+            }
           >
             {activeModule === 'stack' && <StackModule />}
             {activeModule === 'queue' && <QueueModule />}

@@ -3,6 +3,7 @@ import {
   analyzeTree,
   deleteTree,
   insertTree,
+  isValidBst,
   searchTree,
   setTreeAutoBalance,
   stopTreeTraversal,
@@ -42,6 +43,42 @@ describe('bst algorithms', () => {
     const inorder = traverseTree(state, 'inorder').next.traversal;
 
     expect(inorder).toEqual([13, 30, 40, 60]);
+    expect(isValidBst(state.root)).toBe(true);
+  });
+
+  it('deletes root with two children using valid BST replacement', () => {
+    let state = EMPTY_TREE;
+    for (const value of [40, 22, 60, 13, 30, 50, 72]) {
+      state = insertTree(state, value).next;
+    }
+
+    state = deleteTree(state, 40).next;
+
+    expect(state.root?.value).toBe(50);
+    expect(traverseTree(state, 'inorder').next.traversal).toEqual([13, 22, 30, 50, 60, 72]);
+    expect(isValidBst(state.root)).toBe(true);
+  });
+
+  it('preserves BST invariants through repeated mixed deletes', () => {
+    let state = EMPTY_TREE;
+    const values = [40, 22, 60, 13, 30, 50, 72, 27, 35];
+    for (const value of values) {
+      state = insertTree(state, value).next;
+    }
+
+    const toDelete = [22, 13, 72, 40, 35, 50, 30, 60, 27];
+    const remaining = new Set(values);
+
+    for (const value of toDelete) {
+      state = deleteTree(state, value).next;
+      remaining.delete(value);
+
+      const inorder = traverseTree(state, 'inorder').next.traversal;
+      const expected = [...remaining].sort((left, right) => left - right);
+
+      expect(inorder).toEqual(expected);
+      expect(isValidBst(state.root)).toBe(true);
+    }
   });
 
   it('produces expected traversal order', () => {

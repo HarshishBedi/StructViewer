@@ -3,7 +3,7 @@ import { useAlgoStore } from '../../lib/state/useAlgoStore';
 import { type ThemeMode } from '../../lib/theme/theme';
 import { cn } from '../../lib/utils/cn';
 import { Button } from '../ui/Button';
-import { IconCommand, IconKeyboard, IconMoon, IconSidebarRight, IconSun } from '../ui/icons';
+import { IconCommand, IconKeyboard, IconMoon, IconSun } from '../ui/icons';
 
 const THEME_LABELS: Record<'light' | 'dark', string> = {
   light: 'Light',
@@ -34,12 +34,7 @@ function ThemeModeIcon({ mode }: { mode: 'light' | 'dark' }) {
   return <IconMoon className="theme-toggle-icon" />;
 }
 
-interface TopBarProps {
-  inspectorOpen: boolean;
-  onToggleInspector: () => void;
-}
-
-export function TopBar({ inspectorOpen, onToggleInspector }: TopBarProps) {
+export function TopBar() {
   const activeModule = useAlgoStore((state) => state.activeModule);
   const setActiveModule = useAlgoStore((state) => state.setActiveModule);
   const setHelpOpen = useAlgoStore((state) => state.setHelpOpen);
@@ -81,19 +76,6 @@ export function TopBar({ inspectorOpen, onToggleInspector }: TopBarProps) {
       </div>
 
       <div className="topbar-actions" role="toolbar" aria-label="Application controls">
-        <Button
-          variant="secondary"
-          size="sm"
-          iconOnly
-          className={cn('navbar-action', inspectorOpen && 'navbar-action-active')}
-          onClick={onToggleInspector}
-          aria-label={inspectorOpen ? 'Hide inspector panel' : 'Show inspector panel'}
-          aria-keyshortcuts="I"
-          title={inspectorOpen ? 'Hide Inspector (I)' : 'Show Inspector (I)'}
-        >
-          <IconSidebarRight className="theme-toggle-icon" />
-          <span className="sr-only">Toggle inspector</span>
-        </Button>
         <Button
           variant="secondary"
           size="sm"

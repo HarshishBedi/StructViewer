@@ -163,6 +163,18 @@ export function toggleHeapMode(state: HeapState, mode: HeapMode): HeapActionResu
   };
 }
 
+export function clearHeap(state: HeapState): HeapActionResult {
+  return {
+    next: {
+      mode: state.mode,
+      items: []
+    },
+    title: 'Reset heap',
+    description: `Cleared all values from the ${state.mode}-heap.`,
+    complexity: 'O(1)'
+  };
+}
+
 export function presetHeap(mode: HeapMode = 'max'): HeapActionResult {
   const values = [21, 14, 18, 8, 12, 3, 6, 5, 7];
 

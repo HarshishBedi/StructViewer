@@ -119,7 +119,7 @@ export function TrieVisualizer() {
     <div className="viz-trie" aria-label="Trie visualization">
       <svg
         viewBox={`0 0 ${TRIE_CANVAS_WIDTH} ${canvasHeight}`}
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMin meet"
         className="trie-canvas"
       >
         {layout.nodes.map((node) => {
